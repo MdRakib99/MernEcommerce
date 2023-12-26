@@ -11,7 +11,7 @@ exports.decodeToken = (token) => {
   try {
     let KEY = "123-ABC-XYZ";
     return jwt.verify(token, KEY);
-  } catch (error) {
+  } catch (e) {
     return null;
   }
 };

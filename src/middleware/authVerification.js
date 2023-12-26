@@ -1,20 +1,18 @@
 const { decodeToken } = require("../utility/tokenHelper");
 
 module.exports = (req, res, next) => {
-  //Receive Token
-  let token = req.cookies["token"];
+  // Receive Token
+  let token = req.headers["token"];
+  if (!token) {
+    token = req.cookies["token"];
+  }
 
-  // const finalToken = token && token.splice(0, 5);
-  console.log(req.cookies);
-
-  // let token = req.cookies["token"];
-
-  //Token Decode
+  // Token Decode
   let decoded = decodeToken(token);
 
-  // Request Header and add email+userId
+  // Request Header Email+UserID Add
   if (decoded === null) {
-    return res.status(401).json({ status: "failed", message: "Unauthorized" });
+    return res.status(401).json({ status: "fail", message: "Unauthorized" });
   } else {
     let email = decoded["email"];
     let user_id = decoded["user_id"];
