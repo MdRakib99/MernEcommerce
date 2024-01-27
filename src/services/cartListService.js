@@ -70,7 +70,7 @@ const saveCartListService = async (req) => {
     let reqBody = req.body;
     reqBody.userID = userId;
     await cartModel.create(reqBody);
-    return { status: "success", message: "Wish List Saved successfully" };
+    return { status: "success", message: "Cart List Saved successfully" };
   } catch (error) {
     return { status: "fail", message: error };
   }

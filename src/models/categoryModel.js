@@ -9,3 +9,4 @@ const dataSchema = mongoose.Schema(
 );
 
 const categoryModel = mongoose.model("categories", dataSchema);
+module.exports = categoryModel;

@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const productController = require("../controllers/productController");
 const userController = require("../controllers/userController");
 const authVerification = require("../middleware/authVerification");
@@ -16,9 +18,19 @@ const {
   updateCartList,
 } = require("../controllers/cartListController");
 
-const { createInvoice } = require("../controllers/invoiceController");
-
-const router = express.Router();
+const {
+  createInvoice,
+  paymentSuccess,
+  paymentFail,
+  paymentCancel,
+  paymentIPN,
+  invoiceList,
+  invoiceProductList,
+} = require("../controllers/invoiceController");
+const {
+  featureList,
+  legalDetails,
+} = require("../controllers/featuresController");
 
 //product
 
@@ -50,6 +62,8 @@ router.get(
   productController.productListByRemark
 );
 
+router.post("/productListByFilter", productController.productListByFilter);
+
 router.get("/productDetails/:productID", productController.productDetails);
 router.get(
   "/productReviewList/:productID",
@@ -78,8 +92,29 @@ router.post("/removeCartList", authVerification, removeCartList);
 router.post("/updateCartList/:cartID", authVerification, updateCartList);
 router.get("/cartList", authVerification, cartList);
 
-//Invoice & Payment
+//Invoice
 
 router.get("/createInvoice", authVerification, createInvoice);
+router.get("/invoiceList", authVerification, invoiceList);
+router.get(
+  "/invoiceProductList/:invoice_id",
+  authVerification,
+  invoiceProductList
+);
+
+//  Payment
+
+router.post("/paymentSuccess/:trxID", paymentSuccess);
+router.post("/paymentFail/:trxID", paymentFail);
+router.post("/paymentCancel/:trxID", paymentCancel);
+router.post("/paymentIPN/:trxID", paymentIPN);
+
+//  Feature
+
+router.get("/featureList", featureList);
+router.get("/legalDetails/:type", legalDetails);
+
+//createReview
+router.post("/createReview", authVerification, productController.createReview);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const brandModel = require("../models/brandModel");
 const categoryModel = require("../models/categoryModel");
 const sliderModel = require("../models/sliderModel");
 const productModel = require("../models/productModel");
-const productDetailsModel = require("../models/productDetailsModel");
+// const productDetailsModel = require("../models/productDetailsModel");
 const reviewModel = require("../models/reviewModel");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
@@ -50,15 +50,15 @@ const listByBrandService = async (req) => {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
@@ -94,15 +94,15 @@ const listByCategoryService = async (req) => {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
@@ -134,20 +134,22 @@ const listByRemarkService = async (req) => {
         as: "brand",
       },
     };
+
     let joinWithCategoryStage = {
       $lookup: {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
+
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
@@ -166,6 +168,7 @@ const listByRemarkService = async (req) => {
     return { status: "fail", data: error }.toString();
   }
 };
+
 const listBySimilarService = async (req) => {
   try {
     let CategoryID = new ObjectId(req.params.categoryID);
@@ -179,20 +182,22 @@ const listBySimilarService = async (req) => {
         as: "brand",
       },
     };
+
     let joinWithCategoryStage = {
       $lookup: {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
+
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
@@ -225,14 +230,16 @@ const detailsService = async (req) => {
         as: "brand",
       },
     };
+
     let joinWithCategoryStage = {
       $lookup: {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
+
     let joinWithDetailsStage = {
       $lookup: {
         from: "productdetails",
@@ -243,13 +250,13 @@ const detailsService = async (req) => {
     };
 
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
     let unwinDetailsStage = { $unwind: "$details" };
 
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
@@ -287,25 +294,28 @@ const listByKeywordService = async (req) => {
         as: "brand",
       },
     };
+
     let joinWithCategoryStage = {
       $lookup: {
         from: "categories",
         localField: "categoryID",
         foreignField: "_id",
-        as: "categorie",
+        as: "category",
       },
     };
+
     let unwindBrandStage = { $unwind: "$brand" };
-    let unwindCategoryStage = { $unwind: "$categorie" };
+    let unwindCategoryStage = { $unwind: "$category" };
 
     let projectionStage = {
       $project: {
         "brand._id": 0,
-        "categorie._id": 0,
+        "category._id": 0,
         categoryID: 0,
         brandID: 0,
       },
     };
+
     let data = await productModel.aggregate([
       matchStage,
       joinWithBrandStage,
@@ -316,6 +326,80 @@ const listByKeywordService = async (req) => {
 
       projectionStage,
     ]);
+    return { status: "success", data: data };
+  } catch (error) {
+    return { status: "fail", data: error }.toString();
+  }
+};
+
+const listByFilterService = async (req) => {
+  try {
+    let matchCondition = {};
+
+    if (req.body["categoryID"]) {
+      matchCondition.categoryID = new ObjectId(req.body["categoryID"]);
+    }
+
+    if (req.body["brandID"]) {
+      matchCondition.brandID = new ObjectId(req.body["brandID"]);
+    }
+
+    let matchStage = { $match: matchCondition };
+
+    let addFieldStage = {
+      $addFields: { numericPrice: { $toInt: "$price" } },
+    };
+    let minPrice = parseInt(req.body["minPrice"]);
+    let maxPrice = parseInt(req.body["maxPrice"]);
+
+    let priceMatchCondition = {};
+
+    if (!isNaN(minPrice)) {
+      priceMatchCondition["numericPrice"] = { $gte: minPrice };
+    }
+
+    if (!isNaN(maxPrice)) {
+      priceMatchCondition["numericPrice"] = {
+        ...(priceMatchCondition["numericPrice"] || {}),
+        $lte: maxPrice,
+      };
+    }
+
+    let priceMatchStage = { $match: priceMatchCondition };
+
+    let joinWithBrandStage = {
+      $lookup: {
+        from: "brands",
+        localField: "brandID",
+        foreignField: "_id",
+        as: "brand",
+      },
+    };
+    let joinWithCategoryStage = {
+      $lookup: {
+        from: "categories",
+        localField: "categoryID",
+        foreignField: "_id",
+        as: "category",
+      },
+    };
+    let unwindBrandStage = { $unwind: "$brand" };
+    let unwindCategoryStage = { $unwind: "$category" };
+    let projectionStage = {
+      $project: { "brand._id": 0, "category._id": 0, brandID: 0 },
+    };
+
+    let data = await productModel.aggregate([
+      matchStage,
+      addFieldStage,
+      priceMatchStage,
+      joinWithBrandStage,
+      joinWithCategoryStage,
+      unwindBrandStage,
+      unwindCategoryStage,
+      projectionStage,
+    ]);
+
     return { status: "success", data: data };
   } catch (error) {
     return { status: "fail", data: error }.toString();
@@ -357,6 +441,22 @@ const reviewListService = async (req) => {
   }
 };
 
+const createReviewService = async (req) => {
+  try {
+    let reqBody = req.body;
+    let userId = req.headers.user_id;
+
+    let result = await reviewModel.create({
+      userID: userId,
+      ...reqBody,
+    });
+
+    return { status: "success", data: result };
+  } catch (error) {
+    return { status: "fail", data: error };
+  }
+};
+
 module.exports = {
   brandListService,
   categoryListService,
@@ -364,8 +464,10 @@ module.exports = {
   listByCategoryService,
   listByBrandService,
   listByRemarkService,
+  listByFilterService,
   listBySimilarService,
   listByKeywordService,
   detailsService,
+  createReviewService,
   reviewListService,
 };
