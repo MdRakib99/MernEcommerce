@@ -16,15 +16,15 @@ exports.createInvoice = async (req, res) => {
 
 exports.paymentSuccess = async (req, res) => {
   let result = await paymentSuccessService(req);
-  return res.status(200).json(result);
+  return res.redirect("/invoice");
 };
 exports.paymentFail = async (req, res) => {
   let result = await paymentFailService(req);
-  return res.status(200).json(result);
+  return res.redirect("/invoice");
 };
 exports.paymentCancel = async (req, res) => {
   let result = await paymentSuccessService(req);
-  return res.status(200).json(result);
+  return res.redirect("/invoice");
 };
 exports.paymentIPN = async (req, res) => {
   let result = await paymentIPNService(req);

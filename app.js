@@ -48,6 +48,7 @@ app.use(express.static(path.resolve(__dirname, "client-side", "dist")));
 // Frontend route define
 
 app.get("*", function (req, res) {
+  // res.send("this is star route");
   res.sendFile(path.resolve(__dirname, "client-side", "dist", "index.html"));
 });
 

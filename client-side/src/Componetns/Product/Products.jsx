@@ -120,22 +120,25 @@ const Products = () => {
                   ) : (
                     <div className='container'>
                       <div className='row'>
-                        {listByRemark.map((item, i) => {
+                        {listByRemark.map((item) => {
                           let price = (
                             <p className='bodyMedium  text-dark my-1'>
-                              Price: ${item["price"]}{" "}
+                              Price: ${item["price"]}
                             </p>
                           );
                           if (item["discount"] === true) {
                             price = (
                               <p className='bodyMedium  text-dark my-1'>
                                 Price:<strike> ${item["price"]} </strike> $
-                                {item["discountPrice"]}{" "}
+                                {item["discountPrice"]}
                               </p>
                             );
                           }
                           return (
-                            <div className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'>
+                            <div
+                              className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'
+                              key={item["_id"]}
+                            >
                               <Link
                                 to={`/details/${item["_id"]}`}
                                 className='card shadow-sm h-100 rounded-3 bg-white'
@@ -176,7 +179,7 @@ const Products = () => {
                   ) : (
                     <div className='container'>
                       <div className='row'>
-                        {listByRemark.map((item, i) => {
+                        {listByRemark.map((item) => {
                           let price = (
                             <p className='bodyMedium  text-dark my-1'>
                               Price: ${item["price"]}{" "}
@@ -186,7 +189,7 @@ const Products = () => {
                             price = (
                               <p className='bodyMedium  text-dark my-1'>
                                 Price:<strike> ${item["price"]} </strike> $
-                                {item["discountPrice"]}{" "}
+                                {item["discountPrice"]}
                               </p>
                             );
                           }
@@ -235,7 +238,7 @@ const Products = () => {
                   ) : (
                     <div className='container'>
                       <div className='row'>
-                        {listByRemark.map((item, i) => {
+                        {listByRemark.map((item) => {
                           let price = (
                             <p className='bodyMedium  text-dark my-1'>
                               Price: ${item["price"]}{" "}
@@ -250,7 +253,10 @@ const Products = () => {
                             );
                           }
                           return (
-                            <div className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'>
+                            <div
+                              className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'
+                              key={item["_id"]}
+                            >
                               <Link
                                 to={`/details/${item["_id"]}`}
                                 className='card shadow-sm h-100 rounded-3 bg-white'
@@ -294,19 +300,22 @@ const Products = () => {
                         {listByRemark.map((item, i) => {
                           let price = (
                             <p className='bodyMedium  text-dark my-1'>
-                              Price: ${item["price"]}{" "}
+                              Price: ${item["price"]}
                             </p>
                           );
                           if (item["discount"] === true) {
                             price = (
                               <p className='bodyMedium  text-dark my-1'>
                                 Price:<strike> ${item["price"]} </strike> $
-                                {item["discountPrice"]}{" "}
+                                {item["discountPrice"]}
                               </p>
                             );
                           }
                           return (
-                            <div className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'>
+                            <div
+                              className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'
+                              key={item["_id"]}
+                            >
                               <Link
                                 to={`/details/${item["_id"]}`}
                                 className='card shadow-sm h-100 rounded-3 bg-white'
@@ -350,7 +359,7 @@ const Products = () => {
                         {listByRemark.map((item, i) => {
                           let price = (
                             <p className='bodyMedium  text-dark my-1'>
-                              Price: ${item["price"]}{" "}
+                              Price: ${item["price"]}
                             </p>
                           );
                           if (item["discount"] === true) {
@@ -362,7 +371,10 @@ const Products = () => {
                             );
                           }
                           return (
-                            <div className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'>
+                            <div
+                              className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'
+                              key={item["_id"]}
+                            >
                               <Link
                                 to={`/details/${item["_id"]}`}
                                 className='card shadow-sm h-100 rounded-3 bg-white'

@@ -1,23 +1,23 @@
 class validationHelper {
-  static isLetter(value) {
-    let isLetterRegx =
+  static isLater(value) {
+    let OnlyLaterRegx =
       /^[A-Za-z\'\s\.\,\-\!\@\#\$\%\^\&\*\(\)\[\]\{\}\:\;\"\<\>\?\/\+\=\_\\\|`\~]+$/;
-    return isLetterRegx.test(value);
+    return OnlyLaterRegx.test(value);
   }
 
   static isEmail(value) {
-    let emailRegx = /\S+@\S+\.\S+/;
-    return emailRegx.test(value);
+    let EmailRegx = /\S+@\S+\.\S+/;
+    return EmailRegx.test(value);
   }
 
   static isMobile(value) {
-    let mobileRegx = /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/;
-    return mobileRegx.test(value);
+    let MobileRegx = /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/;
+    return MobileRegx.test(value);
   }
 
   static isNumber(value) {
-    let onlyNumberRegx = /^\d+(\.\d+)?$/;
-    return onlyNumberRegx.test(value);
+    let OnlyNumberRegx = /^\d+(\.\d+)?$/;
+    return OnlyNumberRegx.test(value);
   }
 
   static isNull(value) {
@@ -28,5 +28,4 @@ class validationHelper {
     return value.length === 0;
   }
 }
-
 export default validationHelper;

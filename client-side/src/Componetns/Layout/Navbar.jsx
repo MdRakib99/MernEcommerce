@@ -1,10 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/plainb-logo.svg";
 import productStore from "../../Store/ProductStore";
+import userStore from "../../Store/UserStore";
+import UserSubmitButton from "../User/UserSubmitButton";
+import cartStore from "../../Store/CartStoe";
+import wishStore from "../../Store/WishStore";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { setSearchKeyword, searchKeyword } = productStore();
+  const { isLogin, userLogoutRequest } = userStore();
+  const { cartCount, cartListRequest } = cartStore();
+  const { wishCount, wishListRequest } = wishStore();
+
+  const onLogout = async () => {
+    await userLogoutRequest();
+    sessionStorage.clear();
+    localStorage.clear();
+    navigate("/");
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (isLogin()) {
+        await cartListRequest();
+        await wishListRequest();
+      }
+    })();
+  }, []);
+
   return (
     <>
       <div className='container-fluid text-white p-2 bg-success'>
@@ -96,34 +121,55 @@ const Navbar = () => {
                 </svg>
               </Link>
             </div>
-            <Link
-              to='/cart'
-              type='button'
-              className='btn ms-2 btn-light position-relative'
-            >
-              <i className='bi text-dark bi-bag'></i>
-            </Link>
-            <Link
-              to='/wish'
-              type='button'
-              className='btn ms-2 btn-light d-flex'
-            >
-              <i className='bi text-dark bi-heart'></i>
-            </Link>
-            <Link
-              type='button'
-              className='btn ms-3 btn-success d-flex'
-              to='/profile'
-            >
-              Profile
-            </Link>
-            <Link
-              type='button'
-              className='btn ms-3 btn-success d-flex'
-              to='/profile'
-            >
-              Logout
-            </Link>
+
+            {isLogin() ? (
+              <>
+                <Link
+                  to='/cart'
+                  type='button'
+                  className='btn ms-2 btn-light position-relative'
+                >
+                  <i className='bi text-dark bi-bag'></i>
+                  <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
+                    {cartCount}
+                    <span className='visually-hidden'>unread messages</span>
+                  </span>
+                </Link>
+                <Link
+                  to='/wish'
+                  type='button'
+                  className='btn ms-2 btn-light position-relative'
+                >
+                  <i className='bi text-dark bi-heart'></i>
+                  <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning'>
+                    {wishCount}
+                    <span className='visually-hidden'>unread messages</span>
+                  </span>
+                </Link>
+                <Link
+                  type='button'
+                  className='btn ms-3 btn-success d-flex'
+                  to='/profile'
+                >
+                  Profile
+                </Link>
+                <UserSubmitButton
+                  text='Logout'
+                  className='btn ms-3 btn-success d-flex'
+                  onClick={onLogout}
+                >
+                  Logout
+                </UserSubmitButton>
+              </>
+            ) : (
+              <Link
+                type='button'
+                className='btn ms-3 btn-success d-flex'
+                to='/login'
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </nav>

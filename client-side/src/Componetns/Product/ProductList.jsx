@@ -56,7 +56,9 @@ const ProductList = () => {
               {brandList !== null ? (
                 brandList.map((item, i) => {
                   return (
-                    <option value={item["_id"]}>{item["brandName"]}</option>
+                    <option key={i} value={item["_id"]}>
+                      {item["brandName"]}
+                    </option>
                   );
                 })
               ) : (
@@ -75,7 +77,9 @@ const ProductList = () => {
               {categoryList !== null ? (
                 categoryList.map((item, i) => {
                   return (
-                    <option value={item["_id"]}>{item["categoryName"]}</option>
+                    <option key={i} value={item["_id"]}>
+                      {item["categoryName"]}
+                    </option>
                   );
                 })
               ) : (
@@ -135,7 +139,10 @@ const ProductList = () => {
                         );
                       }
                       return (
-                        <div className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'>
+                        <div
+                          key={i}
+                          className='col-md-3 p-2 col-lg-3 col-sm-6 col-12'
+                        >
                           <Link
                             to={`/details/${item["_id"]}`}
                             className='card shadow-sm h-100 rounded-3 bg-white'

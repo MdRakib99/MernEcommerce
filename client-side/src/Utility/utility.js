@@ -13,7 +13,7 @@ export function setEmail(email) {
 }
 
 export function getEmail() {
-  sessionStorage.getItem("email");
+  return sessionStorage.getItem("email");
 }
 
 export function timestampToDate(timestamp) {

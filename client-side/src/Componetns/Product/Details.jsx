@@ -1,21 +1,50 @@
 import React, { useState } from "react";
 import ProductImages from "./ProductImages";
+import { toast } from "react-toastify";
 import parse from "html-react-parser";
 import productStore from "../../Store/ProductStore";
 import ProductDetailSkeleton from "../../LoadingSkeleton/ProductDetailSkeleton";
 import Reviews from "./Reviews";
+import CartSubmitButton from "../Cart/CartSubmitButton";
+import cartStore from "../../Store/CartStoe";
+import wishStore from "../../Store/WishStore";
+import WishSubmitButton from "../Wish/WishSubmitButton";
+import { useNavigate } from "react-router-dom";
 
 const Details = () => {
+  const navigate = useNavigate();
   const { productDetails } = productStore();
+  const { cartSaveRequest, cartListRequest, cartForm, cartFormChange } =
+    cartStore();
+  const { wishSaveRequest, wishtListRequest } = wishStore();
   const [qty, setQty] = useState(1);
 
   const incrementQty = () => {
     setQty((qty) => qty + 1);
+    cartFormChange("qty", qty + 1);
   };
 
   const decrementQty = () => {
     if (qty > 1) {
       setQty((qty) => qty - 1);
+      cartFormChange("qty", qty - 1);
+    }
+  };
+
+  const addCart = async (productID) => {
+    let res = await cartSaveRequest(cartForm, productID, qty);
+
+    if (res) {
+      toast.success("Added to Cart List");
+      await cartListRequest();
+    }
+  };
+  const addWish = async (productID) => {
+    let res = await wishSaveRequest(productID);
+
+    if (res) {
+      toast.success("Added to Wish List");
+      await wishtListRequest();
     }
   };
 
@@ -55,7 +84,13 @@ const Details = () => {
               <div className='row'>
                 <div className='col-4 p-2'>
                   <label className='bodySmal'>Size</label>
-                  <select className='form-control my-2 form-select'>
+                  <select
+                    value={cartForm.size}
+                    onChange={(e) => {
+                      cartFormChange("size", e.target.value);
+                    }}
+                    className='form-control my-2 form-select'
+                  >
                     <option value=''>Size</option>
                     {productDetails[0]["details"]["size"]
                       .split(",")
@@ -66,7 +101,13 @@ const Details = () => {
                 </div>
                 <div className='col-4 p-2'>
                   <label className='bodySmal'>Color</label>
-                  <select className='form-control my-2 form-select'>
+                  <select
+                    value={cartForm.color}
+                    onChange={(e) => {
+                      cartFormChange("color", e.target.value);
+                    }}
+                    className='form-control my-2 form-select'
+                  >
                     <option value=''>Color</option>
                     {productDetails[0]["details"]["color"]
                       .split(",")
@@ -98,10 +139,22 @@ const Details = () => {
                   </div>
                 </div>
                 <div className='col-4 p-2'>
-                  <button className='btn w-100 btn-success'>Add to Cart</button>
+                  <CartSubmitButton
+                    onClick={async () => {
+                      await addCart(productDetails[0]["_id"]);
+                    }}
+                    className='btn w-100 btn-success'
+                    text=' Add to Cart'
+                  />
                 </div>
                 <div className='col-4 p-2'>
-                  <button className='btn w-100 btn-success'>Add to Wish</button>
+                  <WishSubmitButton
+                    onClick={async () => {
+                      await addWish(productDetails[0]["_id"]);
+                    }}
+                    className='btn w-100 btn-success'
+                    text='Add to Wish'
+                  />
                 </div>
               </div>
             </div>
